@@ -1,5 +1,8 @@
 <template>
-  <div id="app" class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 transition-all duration-300">
+  <div
+    id="app"
+    class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-blue-900 transition-all duration-300"
+  >
     <!-- Loading Screen -->
     <LoadingScreen v-if="isLoading" />
 
@@ -15,107 +18,113 @@
 </template>
 
 <script>
-import { onMounted } from 'vue'
-import { useAuthStore } from '@/stores/authStore'
-import { useUIStore } from '@/stores/uiStore'
-import LoadingScreen from '@/components/LoadingScreen.vue'
-import LoginScreen from '@/components/LoginScreen.vue'
-import MainLayout from '@/components/layout/MainLayout.vue'
-import ToastContainer from '@/components/ToastContainer.vue'
+import { onMounted } from 'vue';
+import { useAuthStore } from '@/stores/authStore';
+import { useUIStore } from '@/stores/uiStore';
+import LoadingScreen from '@/components/LoadingScreen.vue';
+import LoginScreen from '@/components/LoginScreen.vue';
+import MainLayout from '@/components/layout/MainLayout.vue';
+import ToastContainer from '@/components/ToastContainer.vue';
 
 export default {
-  name: 'EmployeeManagementSystem',  components: {
+  name: 'EmployeeManagementSystem',
+  components: {
     LoadingScreen,
     LoginScreen,
     MainLayout,
-    ToastContainer
+    ToastContainer,
   },
   setup() {
-    const { 
-      isLoading, 
-      isAuthenticated, 
-      setLoading, 
-      initializeAuth 
-    } = useAuthStore()
-      const { 
-      initializeTheme, 
-      closeAllDropdowns,
-      redirectToAuthorizedView 
-    } = useUIStore()
+    const { isLoading, isAuthenticated, setLoading, initializeAuth } =
+      useAuthStore();
+    const { initializeTheme, closeAllDropdowns, redirectToAuthorizedView } =
+      useUIStore();
 
     onMounted(async () => {
       // Initialize theme
-      initializeTheme()
-      
+      initializeTheme();
+
       // Initialize authentication (check for stored session)
-      initializeAuth()
-      
+      initializeAuth();
+
       // Simulate initial loading
       setTimeout(async () => {
-        setLoading(false)
-        
+        setLoading(false);
+
         // Redirect to authorized view if user is authenticated
         if (isAuthenticated.value) {
-          redirectToAuthorizedView()
-          
+          redirectToAuthorizedView();
+
           // Add some initial sample notifications if user is authenticated
           try {
-            const { useNotificationStore } = await import('@/stores/notificationStore');
+            const { useNotificationStore } = await import(
+              '@/stores/notificationStore'
+            );
             const notificationStore = useNotificationStore();
-            
+
             // Add some sample notifications for demonstration
             setTimeout(() => {
-              notificationStore.addNotification('SYSTEM_STARTUP', 'Employee Management System initialized successfully');
+              notificationStore.addNotification(
+                'SYSTEM_STARTUP',
+                'Employee Management System initialized successfully'
+              );
             }, 1000);
-            
+
             setTimeout(() => {
-              notificationStore.addNotification('BACKUP_CREATED', 'Daily system backup completed successfully');
+              notificationStore.addNotification(
+                'BACKUP_CREATED',
+                'Daily system backup completed successfully'
+              );
             }, 2000);
           } catch (error) {
             console.warn('Could not add initial notifications:', error);
           }
         }
-      }, 2000)
+      }, 2000);
 
       // Close dropdowns when clicking outside
-      document.addEventListener('click', (e) => {
+      document.addEventListener('click', e => {
         // Check if the click is outside dropdown elements
-        const isDropdownClick = e.target.closest('.dropdown-container') || 
-                               e.target.closest('[data-dropdown]') ||
-                               e.target.closest('button[data-dropdown-toggle]')
-        
+        const isDropdownClick =
+          e.target.closest('.dropdown-container') ||
+          e.target.closest('[data-dropdown]') ||
+          e.target.closest('button[data-dropdown-toggle]');
+
         if (!isDropdownClick) {
-          closeAllDropdowns()
+          closeAllDropdowns();
         }
-      })
+      });
 
       // Handle escape key to close dropdowns
-      document.addEventListener('keydown', (e) => {
+      document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
-          closeAllDropdowns()
+          closeAllDropdowns();
         }
-      })
-    })
+      });
+    });
 
     return {
       isLoading,
-      isAuthenticated
-    }
-  }
-}
+      isAuthenticated,
+    };
+  },
+};
 </script>
 
 <style scoped>
 /* Custom animations and transitions */
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease;
 }
 
-.fade-enter-from, .fade-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 
-.slide-enter-active, .slide-leave-active {
+.slide-enter-active,
+.slide-leave-active {
   transition: transform 0.3s ease;
 }
 

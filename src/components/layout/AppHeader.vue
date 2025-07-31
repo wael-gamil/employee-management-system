@@ -87,7 +87,8 @@
                 stroke-width="2"
                 d="M15 17h5l-5 5v-5zM11 19H6.5A2.5 2.5 0 014 16.5v-9A2.5 2.5 0 016.5 5h11A2.5 2.5 0 0120 7.5v3.5"
               ></path>
-            </svg>            <span
+            </svg>
+            <span
               v-if="notificationStore.unreadCount > 0"
               class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
             >
@@ -105,7 +106,8 @@
             >
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                 Notifications
-              </h3>              <button
+              </h3>
+              <button
                 v-if="notificationStore.unreadCount > 0"
                 @click="notificationStore.markAllAsRead"
                 class="text-sm text-blue-600 hover:text-blue-500"
@@ -119,24 +121,30 @@
                 class="p-4 text-center text-gray-500 dark:text-gray-400"
               >
                 No notifications
-              </div>              <div
+              </div>
+              <div
                 v-for="notification in notifications"
                 :key="notification?.id || Math.random()"
                 :class="[
                   'p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer',
                   !notification?.read ? 'bg-blue-50 dark:bg-blue-900/10' : '',
                 ]"
-                @click="notification?.id && markNotificationAsRead(notification.id)"
-              >                <div class="flex items-start space-x-3">
-                  <div :class="[
-                    'w-8 h-8 rounded-full flex items-center justify-center',
-                    notification?.bgColor || 'bg-blue-100'
-                  ]">
-                    <component 
-                      :is="notification?.icon || 'BellIcon'" 
+                @click="
+                  notification?.id && markNotificationAsRead(notification.id)
+                "
+              >
+                <div class="flex items-start space-x-3">
+                  <div
+                    :class="[
+                      'w-8 h-8 rounded-full flex items-center justify-center',
+                      notification?.bgColor || 'bg-blue-100',
+                    ]"
+                  >
+                    <component
+                      :is="notification?.icon || 'BellIcon'"
                       :class="[
                         'w-4 h-4',
-                        notification?.color || 'text-blue-600'
+                        notification?.color || 'text-blue-600',
                       ]"
                     />
                   </div>
@@ -328,7 +336,7 @@ export default {
   name: 'AppHeader',
   components: {
     UserProfileModal,
-    ...IconComponents
+    ...IconComponents,
   },
   setup() {
     // Use local reactive state for dropdowns - simpler approach like React useState
@@ -374,7 +382,8 @@ export default {
 
     onUnmounted(() => {
       document.removeEventListener('click', handleClickOutside);
-    });    const handleLogout = async () => {
+    });
+    const handleLogout = async () => {
       try {
         await logout();
       } catch (error) {
@@ -386,7 +395,8 @@ export default {
     const openProfileModal = () => {
       showProfileModal.value = true;
       showUserMenu.value = false;
-    };    return {
+    };
+    return {
       // Local reactive state
       showNotifications,
       showUserMenu,

@@ -1,12 +1,12 @@
 import { ref, computed } from 'vue';
 import { dataService } from '@/services/dataService';
-import { useNotificationStore } from '@/stores/notificationStore'
-import { useToastStore } from '@/stores/toastStore'
+import { useNotificationStore } from '@/stores/notificationStore';
+import { useToastStore } from '@/stores/toastStore';
 
 export function useCompanyStore() {
   // Get store instances
-  const notificationStore = useNotificationStore()
-  const toastStore = useToastStore()
+  const notificationStore = useNotificationStore();
+  const toastStore = useToastStore();
 
   // Reactive state
   const companies = ref(dataService.getAll('companies'));
@@ -41,7 +41,8 @@ export function useCompanyStore() {
   // Actions
   const loadCompanies = () => {
     companies.value = dataService.getAll('companies');
-  };  const addCompany = async (companyData) => {
+  };
+  const addCompany = async companyData => {
     const newCompany = dataService.create('companies', {
       ...companyData,
       status: companyData.status || 'active',
@@ -50,27 +51,46 @@ export function useCompanyStore() {
       parentId: companyData.parentId || null,
     });
     companies.value = dataService.getAll('companies');
-      // Add notification and toast
-    notificationStore.addNotification('COMPANY_CREATED', `New company "${newCompany.name}" has been created`);
-    toastStore.addToast(`Company "${newCompany.name}" created successfully!`, 'success');
-    
+    // Add notification and toast
+    notificationStore.addNotification(
+      'COMPANY_CREATED',
+      `New company "${newCompany.name}" has been created`
+    );
+    toastStore.addToast(
+      `Company "${newCompany.name}" created successfully!`,
+      'success'
+    );
+
     return newCompany;
-  };  const updateCompany = async (id, updates) => {
+  };
+  const updateCompany = async (id, updates) => {
     const updatedCompany = dataService.update('companies', id, updates);
     companies.value = dataService.getAll('companies');
-      // Add notification and toast
-    notificationStore.addNotification('COMPANY_UPDATED', `Company "${updatedCompany.name}" has been updated`);
-    toastStore.addToast(`Company "${updatedCompany.name}" updated successfully!`, 'success');
-    
+    // Add notification and toast
+    notificationStore.addNotification(
+      'COMPANY_UPDATED',
+      `Company "${updatedCompany.name}" has been updated`
+    );
+    toastStore.addToast(
+      `Company "${updatedCompany.name}" updated successfully!`,
+      'success'
+    );
+
     return updatedCompany;
   };
-  const deleteCompany = async (id) => {  
+  const deleteCompany = async id => {
     const company = dataService.getById('companies', id);
     const success = dataService.delete('companies', id);
     if (success) {
-      companies.value = dataService.getAll('companies');      // Add notification and toast
-      notificationStore.addNotification('COMPANY_DELETED', `Company "${company?.name || 'Unknown'}" has been deleted`);
-      toastStore.addToast(`Company "${company?.name || 'Unknown'}" deleted successfully!`, 'success');
+      companies.value = dataService.getAll('companies'); // Add notification and toast
+      notificationStore.addNotification(
+        'COMPANY_DELETED',
+        `Company "${company?.name || 'Unknown'}" has been deleted`
+      );
+      toastStore.addToast(
+        `Company "${company?.name || 'Unknown'}" deleted successfully!`,
+        'success'
+      );
     }
     return success;
   };

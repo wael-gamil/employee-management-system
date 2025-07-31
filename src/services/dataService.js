@@ -317,7 +317,6 @@ class DataService {
       }
     });
   }
-
   // Initialize default data
   initializeDefaultData() {
     // Initialize companies if not exists
@@ -344,6 +343,54 @@ class DataService {
           employeeCount: 89,
           departments: 5,
           parentId: null,
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+        },
+        {
+          id: 3,
+          name: 'TechCorp Europe',
+          code: 'TECH003',
+          address: '789 Tech Plaza, London, UK',
+          status: 'active',
+          employeeCount: 75,
+          departments: 4,
+          parentId: 1,
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+        },
+        {
+          id: 4,
+          name: 'TechCorp Asia',
+          code: 'TECH004',
+          address: '321 Innovation Blvd, Singapore',
+          status: 'active',
+          employeeCount: 45,
+          departments: 3,
+          parentId: 1,
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+        },
+        {
+          id: 5,
+          name: 'Innovation R&D',
+          code: 'INNO005',
+          address: '654 Research Park, Austin, TX',
+          status: 'active',
+          employeeCount: 25,
+          departments: 2,
+          parentId: 2,
+          createdAt: '2024-01-01T00:00:00.000Z',
+          updatedAt: '2024-01-01T00:00:00.000Z',
+        },
+        {
+          id: 6,
+          name: 'TechCorp UK North',
+          code: 'TECH006',
+          address: '987 Business St, Manchester, UK',
+          status: 'active',
+          employeeCount: 30,
+          departments: 2,
+          parentId: 3,
           createdAt: '2024-01-01T00:00:00.000Z',
           updatedAt: '2024-01-01T00:00:00.000Z',
         },

@@ -1,12 +1,12 @@
 import { ref, computed } from 'vue';
 import { dataService } from '@/services/dataService';
-import { useNotificationStore } from '@/stores/notificationStore'
-import { useToastStore } from '@/stores/toastStore'
+import { useNotificationStore } from '@/stores/notificationStore';
+import { useToastStore } from '@/stores/toastStore';
 
 export function useEmployeeStore() {
   // Get store instances
-  const notificationStore = useNotificationStore()
-  const toastStore = useToastStore()
+  const notificationStore = useNotificationStore();
+  const toastStore = useToastStore();
 
   // Reactive state
   const employees = ref(dataService.getAll('employees'));
@@ -53,7 +53,8 @@ export function useEmployeeStore() {
   // Actions
   const loadEmployees = () => {
     employees.value = dataService.getAll('employees');
-  };  const addEmployee = async (employeeData) => {
+  };
+  const addEmployee = async employeeData => {
     // Get department and company info
     const department = dataService.getById(
       'departments',
@@ -69,13 +70,18 @@ export function useEmployeeStore() {
     });
 
     employees.value = dataService.getAll('employees');
-      // Add notification and toast
-    notificationStore.addNotification('EMPLOYEE_CREATED', `New employee "${newEmployee.name}" has been added`);
-    toastStore.addToast(`Employee "${newEmployee.name}" added successfully!`, 'success');
-    
+    // Add notification and toast
+    notificationStore.addNotification(
+      'EMPLOYEE_CREATED',
+      `New employee "${newEmployee.name}" has been added`
+    );
+    toastStore.addToast(
+      `Employee "${newEmployee.name}" added successfully!`,
+      'success'
+    );
+
     return newEmployee;
   };
-
   const updateEmployee = (id, updates) => {
     // Update department and company names if IDs changed
     if (updates.departmentId) {
@@ -94,13 +100,34 @@ export function useEmployeeStore() {
 
     const updatedEmployee = dataService.update('employees', id, updates);
     employees.value = dataService.getAll('employees');
+    
+    // Add notification and toast
+    notificationStore.addNotification(
+      'EMPLOYEE_UPDATED',
+      `Employee "${updatedEmployee.name}" has been updated`
+    );
+    toastStore.addToast(
+      `Employee "${updatedEmployee.name}" updated successfully!`,
+      'success'
+    );
+    
     return updatedEmployee;
   };
-
   const deleteEmployee = id => {
+    const employee = dataService.getById('employees', id);
     const success = dataService.delete('employees', id);
     if (success) {
       employees.value = dataService.getAll('employees');
+      
+      // Add notification and toast
+      notificationStore.addNotification(
+        'EMPLOYEE_DELETED',
+        `Employee "${employee?.name || 'Unknown'}" has been deleted`
+      );
+      toastStore.addToast(
+        `Employee "${employee?.name || 'Unknown'}" deleted successfully!`,
+        'success'
+      );
     }
     return success;
   };

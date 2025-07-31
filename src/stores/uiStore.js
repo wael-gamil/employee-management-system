@@ -98,7 +98,8 @@ export function useUIStore() {
       state.isDark = true;
       document.documentElement.classList.add('dark');
     }
-  };  const toggleSidebar = () => {
+  };
+  const toggleSidebar = () => {
     state.sidebarOpen = !state.sidebarOpen;
   };
 
@@ -132,7 +133,7 @@ export function useUIStore() {
 
     // Computed
     menuItems,
-    
+
     // Methods
     toggleTheme,
     toggleSidebar,
@@ -140,6 +141,6 @@ export function useUIStore() {
     initializeTheme,
     canAccessView,
     redirectToAuthorizedView,
-    closeAllDropdowns
+    closeAllDropdowns,
   };
 }

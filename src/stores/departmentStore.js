@@ -1,12 +1,12 @@
 import { ref, computed } from 'vue';
 import { dataService } from '@/services/dataService';
-import { useNotificationStore } from '@/stores/notificationStore'
-import { useToastStore } from '@/stores/toastStore'
+import { useNotificationStore } from '@/stores/notificationStore';
+import { useToastStore } from '@/stores/toastStore';
 
 export function useDepartmentStore() {
   // Get store instances
-  const notificationStore = useNotificationStore()
-  const toastStore = useToastStore()
+  const notificationStore = useNotificationStore();
+  const toastStore = useToastStore();
 
   // Reactive state
   const departments = ref(dataService.getAll('departments'));
@@ -104,20 +104,22 @@ export function useDepartmentStore() {
 
     // Add notification and toast
     notificationStore.addNotification(
-        'DEPARTMENT_CREATED',
-        `Department "${newDepartment.name}" has been created in ${company?.name || 'Unknown Company'}`
-      );
-      
-      toastStore.addToast({
-        type: 'success',
-        title: 'Department Created',
-        message: `Department "${newDepartment.name}" was successfully created`
-      });
+      'DEPARTMENT_CREATED',
+      `Department "${newDepartment.name}" has been created in ${
+        company?.name || 'Unknown Company'
+      }`
+    );
+
+    toastStore.addToast({
+      type: 'success',
+      title: 'Department Created',
+      message: `Department "${newDepartment.name}" was successfully created`,
+    });
     return newDepartment;
   };
   const updateDepartment = async (id, updates) => {
     const oldDepartment = dataService.getById('departments', id);
-    
+
     // If company changed, update company name
     if (updates.companyId) {
       const company = dataService.getById('companies', updates.companyId);
@@ -129,37 +131,39 @@ export function useDepartmentStore() {
 
     // Add notification and toast
     notificationStore.addNotification(
-        'DEPARTMENT_UPDATED',
-        `Department "${updatedDepartment.name}" has been updated`
-      );
-      
-      toastStore.addToast({
-        type: 'success',
-        title: 'Department Updated',
-        message: `Department "${updatedDepartment.name}" was successfully updated`
-      });
+      'DEPARTMENT_UPDATED',
+      `Department "${updatedDepartment.name}" has been updated`
+    );
+
+    toastStore.addToast({
+      type: 'success',
+      title: 'Department Updated',
+      message: `Department "${updatedDepartment.name}" was successfully updated`,
+    });
     return updatedDepartment;
   };
   const deleteDepartment = async id => {
     const department = dataService.getById('departments', id);
     const success = dataService.delete('departments', id);
-    
+
     if (success) {
       departments.value = dataService.getAll('departments');
-      
+
       // Add notification and toast
       notificationStore.addNotification(
-          'DEPARTMENT_DELETED',
-          `Department "${department?.name || 'Unknown'}" has been deleted`
-        );
-        
-        toastStore.addToast({
-          type: 'success',
-          title: 'Department Deleted',
-          message: `Department "${department?.name || 'Unknown'}" was successfully deleted`
-        });
-      }
-    
+        'DEPARTMENT_DELETED',
+        `Department "${department?.name || 'Unknown'}" has been deleted`
+      );
+
+      toastStore.addToast({
+        type: 'success',
+        title: 'Department Deleted',
+        message: `Department "${
+          department?.name || 'Unknown'
+        }" was successfully deleted`,
+      });
+    }
+
     return success;
   };
 
@@ -266,16 +270,22 @@ export function useDepartmentStore() {
 
     // Add notification and toast for bulk operation
     notificationStore.addNotification(
-        'DEPARTMENTS_BULK_UPDATED',
-        `${departmentIds.length} departments reassigned to ${company?.name || 'Unknown Company'}`
-      );
-      
-      toastStore.addToast({
-        type: 'success',
-        title: 'Bulk Update Complete',
-        message: `${departmentIds.length} departments successfully reassigned to ${company?.name || 'Unknown Company'}`
-      });
-    };
+      'DEPARTMENTS_BULK_UPDATED',
+      `${departmentIds.length} departments reassigned to ${
+        company?.name || 'Unknown Company'
+      }`
+    );
+
+    toastStore.addToast({
+      type: 'success',
+      title: 'Bulk Update Complete',
+      message: `${
+        departmentIds.length
+      } departments successfully reassigned to ${
+        company?.name || 'Unknown Company'
+      }`,
+    });
+  };
 
   const bulkDeleteDepartments = async departmentIds => {
     const deleted = dataService.bulkDelete('departments', departmentIds);
@@ -284,15 +294,15 @@ export function useDepartmentStore() {
 
     // Add notification and toast for bulk deletion
     notificationStore.addNotification(
-        'DEPARTMENTS_BULK_DELETED',
-        `${deleted.length} departments have been deleted`
-      );
-      
-      toastStore.addToast({
-        type: 'success',
-        title: 'Bulk Delete Complete',
-        message: `${deleted.length} departments successfully deleted`
-      });
+      'DEPARTMENTS_BULK_DELETED',
+      `${deleted.length} departments have been deleted`
+    );
+
+    toastStore.addToast({
+      type: 'success',
+      title: 'Bulk Delete Complete',
+      message: `${deleted.length} departments successfully deleted`,
+    });
     return deleted;
   };
 
@@ -561,4 +571,3 @@ export function useDepartmentStore() {
 //     getDepartmentStats
 //   }
 // }
-

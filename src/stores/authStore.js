@@ -255,16 +255,19 @@ export function useAuthStore() {
           localStorage.setItem('userSession', JSON.stringify(sessionData));
 
           // Store auth token
-          localStorage.setItem('authToken', 'demo-token-' + user.id);          // Set current user in data service
+          localStorage.setItem('authToken', 'demo-token-' + user.id); // Set current user in data service
           dataService.setCurrentUser(updatedUser);
 
           // Add login notification and toast
-          notificationStore.addNotification('USER_LOGIN', `${updatedUser.name} logged in successfully`);
-          
+          notificationStore.addNotification(
+            'USER_LOGIN',
+            `${updatedUser.name} logged in successfully`
+          );
+
           toastStore.addToast({
             type: 'success',
             title: 'Welcome Back!',
-            message: `Successfully logged in as ${updatedUser.name}`
+            message: `Successfully logged in as ${updatedUser.name}`,
           });
           resolve(updatedUser);
         } else {
@@ -272,11 +275,12 @@ export function useAuthStore() {
         }
       }, 1000);
     });
-  };  const logout = async () => {
+  };
+  const logout = async () => {
     const userName = currentUser.value?.name;
-    
+
     currentUser.value = null;
-    isAuthenticated.value = false;    // Clear session data
+    isAuthenticated.value = false; // Clear session data
     localStorage.removeItem('userSession');
     localStorage.removeItem('authToken');
     localStorage.removeItem('rememberedUser');
@@ -284,12 +288,15 @@ export function useAuthStore() {
 
     // Add logout notification and toast
     if (userName) {
-      notificationStore.addNotification('USER_LOGOUT', `${userName} logged out`);
-      
+      notificationStore.addNotification(
+        'USER_LOGOUT',
+        `${userName} logged out`
+      );
+
       toastStore.addToast({
         type: 'info',
         title: 'Logged Out',
-        message: `${userName} has been logged out successfully`
+        message: `${userName} has been logged out successfully`,
       });
     }
 
@@ -428,4 +435,3 @@ export function useAuthStore() {
     isHigherRole,
   };
 }
-
