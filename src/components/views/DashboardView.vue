@@ -62,8 +62,7 @@
         >
           <div
             :class="[
-              'w-10 h-10 rounded-full flex items-center justify-center',
-              activity.bgColor,
+              'w-10 h-10 rounded-full flex items-center justify-center bg-blue-500',
             ]"
           >
             <component :is="activity.icon" class="w-5 h-5 text-white" />
@@ -125,15 +124,20 @@ export default {
         change: 15,
         icon: 'ProjectIcon',
         bgColor: 'bg-orange-500',
-      },    ]); // Use real notifications for recent activity
+      },
+    ]); // Use real notifications for recent activity
     const recentActivity = computed(() => {
       // Use the same approach as AppHeader - access recentNotifications directly
-      const notifications = notificationStore.recentNotifications;
-      
+      const notifications = notificationStore.recentNotifications.value || [];
+
       console.log('DashboardView - notifications from store:', notifications);
 
       // Ensure we have a valid array
-      if (!notifications || !Array.isArray(notifications) || notifications.length === 0) {
+      if (
+        !notifications ||
+        !Array.isArray(notifications) ||
+        notifications.length === 0
+      ) {
         console.log('DashboardView - no notifications available');
         return [];
       }
@@ -147,8 +151,11 @@ export default {
         icon: notification.icon || 'BellIcon',
         bgColor: notification.bgColor || 'bg-blue-500',
       }));
-        
-      console.log('DashboardView - processed recent activities:', recentActivities);
+
+      console.log(
+        'DashboardView - processed recent activities:',
+        recentActivities
+      );
       return recentActivities;
     });
 
