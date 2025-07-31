@@ -8,6 +8,9 @@
 
     <!-- Main Application -->
     <MainLayout v-else />
+
+    <!-- Toast Container -->
+    <ToastContainer />
   </div>
 </template>
 
@@ -18,13 +21,14 @@ import { useUIStore } from '@/stores/uiStore'
 import LoadingScreen from '@/components/LoadingScreen.vue'
 import LoginScreen from '@/components/LoginScreen.vue'
 import MainLayout from '@/components/layout/MainLayout.vue'
+import ToastContainer from '@/components/ToastContainer.vue'
 
 export default {
-  name: 'EmployeeManagementSystem',
-  components: {
+  name: 'EmployeeManagementSystem',  components: {
     LoadingScreen,
     LoginScreen,
-    MainLayout
+    MainLayout,
+    ToastContainer
   },
   setup() {
     const { 
@@ -33,8 +37,7 @@ export default {
       setLoading, 
       initializeAuth 
     } = useAuthStore()
-    
-    const { 
+      const { 
       initializeTheme, 
       closeAllDropdowns,
       redirectToAuthorizedView 
@@ -48,12 +51,29 @@ export default {
       initializeAuth()
       
       // Simulate initial loading
-      setTimeout(() => {
+      setTimeout(async () => {
         setLoading(false)
         
         // Redirect to authorized view if user is authenticated
         if (isAuthenticated.value) {
           redirectToAuthorizedView()
+          
+          // Add some initial sample notifications if user is authenticated
+          try {
+            const { useNotificationStore } = await import('@/stores/notificationStore');
+            const notificationStore = useNotificationStore();
+            
+            // Add some sample notifications for demonstration
+            setTimeout(() => {
+              notificationStore.addNotification('SYSTEM_STARTUP', 'Employee Management System initialized successfully');
+            }, 1000);
+            
+            setTimeout(() => {
+              notificationStore.addNotification('BACKUP_CREATED', 'Daily system backup completed successfully');
+            }, 2000);
+          } catch (error) {
+            console.warn('Could not add initial notifications:', error);
+          }
         }
       }, 2000)
 

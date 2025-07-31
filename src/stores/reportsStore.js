@@ -1,7 +1,13 @@
 import { ref, computed } from 'vue'
 import { dataService } from '@/services/dataService'
+import { useNotificationStore } from '@/stores/notificationStore'
+import { useToastStore } from '@/stores/toastStore'
 
 export function useReportsStore() {
+  // Get store instances
+  const notificationStore = useNotificationStore()
+  const toastStore = useToastStore()
+
   // Reactive state
   const reports = ref([])
   const reportFilters = ref({
@@ -282,8 +288,7 @@ export function useReportsStore() {
       role: employee.role || 'N/A',
       lastActiveDate: employee.updatedAt ? new Date(employee.updatedAt).toLocaleDateString() : 'N/A',
       reason: employee.inactiveReason || 'Not specified'
-    }))
-  }
+    }))  }
 
   // Actions
   const generateReport = async (reportTypeId, customFilters = {}) => {
@@ -311,15 +316,24 @@ export function useReportsStore() {
       }
 
       reports.value.unshift(report)
-      selectedReport.value = report
+      selectedReport.value = report      // Add notification and toast for report generation
+      notificationStore.addNotification(
+        'REPORT_GENERATED',
+        `Report "${report.name}" has been generated with ${report.rowCount} records`
+      );
+      
+      toastStore.addToast({
+        type: 'success',
+        title: 'Report Generated',
+        message: `"${report.name}" report generated successfully with ${report.rowCount} records`
+      });
 
       return report
     } finally {
       isGenerating.value = false
     }
   }
-
-  const exportReport = (report, format = 'csv') => {
+  const exportReport = async (report, format = 'csv') => {
     if (!report || !report.data) return
 
     const timestamp = new Date().toISOString().split('T')[0]
@@ -329,7 +343,17 @@ export function useReportsStore() {
       exportToCSV(report.data, filename)
     } else if (format === 'json') {
       exportToJSON(report, filename)
-    }
+    }    // Add notification and toast for report export
+    notificationStore.addNotification(
+      'REPORT_EXPORTED',
+      `Report "${report.name}" has been exported as ${format.toUpperCase()}`
+    );
+    
+    toastStore.addToast({
+      type: 'success',
+      title: 'Report Exported',
+      message: `Report "${report.name}" exported successfully as ${filename}`
+    });
   }
 
   const exportToCSV = (data, filename) => {
@@ -366,17 +390,42 @@ export function useReportsStore() {
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   }
-
-  const deleteReport = (reportId) => {
+  const deleteReport = async (reportId) => {
+    const report = reports.value.find(r => r.id === reportId);
     reports.value = reports.value.filter(r => r.id !== reportId)
     if (selectedReport.value && selectedReport.value.id === reportId) {
       selectedReport.value = null
+    }    // Add notification and toast for report deletion
+    if (report) {
+      notificationStore.addNotification(
+        'REPORT_DELETED',
+        `Report "${report.name}" has been deleted`
+      );
+      
+      toastStore.addToast({
+        type: 'success',
+        title: 'Report Deleted',
+        message: `Report "${report.name}" was successfully deleted`
+      });
     }
   }
 
-  const clearAllReports = () => {
+  const clearAllReports = async () => {
+    const count = reports.value.length;
     reports.value = []
-    selectedReport.value = null
+    selectedReport.value = null    // Add notification and toast for clearing all reports
+    if (count > 0) {
+      notificationStore.addNotification(
+        'REPORTS_CLEARED',
+        `All ${count} reports have been cleared`
+      );
+      
+      toastStore.addToast({
+        type: 'info',
+        title: 'Reports Cleared',
+        message: `All ${count} reports were successfully cleared`
+      });
+    }
   }
 
   return {

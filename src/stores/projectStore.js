@@ -1,4 +1,6 @@
 import { ref, computed, watch } from 'vue'
+import { useNotificationStore } from '@/stores/notificationStore'
+import { useToastStore } from '@/stores/toastStore'
 
 // Project statuses
 const PROJECT_STATUSES = {
@@ -142,6 +144,10 @@ const sortBy = ref('name')
 const sortOrder = ref('asc')
 
 export function useProjectStore() {
+  // Get store instances
+  const notificationStore = useNotificationStore();
+  const toastStore = useToastStore();
+
   // Computed properties for filtering and sorting
   const filteredProjects = computed(() => {
     let filtered = projects.value
@@ -218,10 +224,8 @@ export function useProjectStore() {
       totalBudget,
       avgProgress
     }
-  })
-
-  // CRUD operations
-  const createProject = (projectData) => {
+  })  // CRUD operations
+  const createProject = async (projectData) => {
     const newProject = {
       id: Math.max(...projects.value.map(p => p.id)) + 1,
       ...projectData,
@@ -230,6 +234,10 @@ export function useProjectStore() {
       updatedAt: new Date().toISOString()
     }
     projects.value.push(newProject)
+      // Add notification and toast
+    notificationStore.addNotification('PROJECT_CREATED', `New project "${newProject.name}" has been created`);
+    toastStore.addToast(`Project "${newProject.name}" created successfully!`, 'success');
+    
     return newProject
   }
 
@@ -437,3 +445,4 @@ export function useProjectStore() {
     getProjectDuration
   }
 }
+

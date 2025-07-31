@@ -7,32 +7,6 @@ const state = reactive({
   sidebarOpen: true,
   currentView: 'dashboard',
   // Dropdown states are now handled locally in components
-  notifications: [
-    {
-      id: 1,
-      title: 'System Update',
-      message: 'New features have been deployed',
-      time: '1 hour ago',
-      type: 'info',
-      read: false,
-    },
-    {
-      id: 2,
-      title: 'Backup Complete',
-      message: 'Daily backup completed successfully',
-      time: '3 hours ago',
-      type: 'success',
-      read: false,
-    },
-    {
-      id: 3,
-      title: 'New User Registration',
-      message: '5 new users registered today',
-      time: '6 hours ago',
-      type: 'info',
-      read: true,
-    },
-  ],
 });
 
 // Define all menu items with their required permissions
@@ -124,43 +98,8 @@ export function useUIStore() {
       state.isDark = true;
       document.documentElement.classList.add('dark');
     }
-  };
-  const toggleSidebar = () => {
+  };  const toggleSidebar = () => {
     state.sidebarOpen = !state.sidebarOpen;
-  };
-
-  const markNotificationAsRead = notificationId => {
-    const notification = state.notifications.find(n => n.id === notificationId);
-    if (notification) {
-      notification.read = true;
-    }
-  };
-
-  const markAllNotificationsAsRead = () => {
-    state.notifications.forEach(notification => {
-      notification.read = true;
-    });
-  };
-
-  const getUnreadNotificationCount = () => {
-    return state.notifications.filter(n => !n.read).length;
-  };
-
-  const addNotification = notification => {
-    state.notifications.unshift({
-      id: Date.now(),
-      read: false,
-      time: 'Just now',
-      type: 'info',
-      ...notification,
-    });
-  };
-
-  const removeNotification = notificationId => {
-    const index = state.notifications.findIndex(n => n.id === notificationId);
-    if (index > -1) {
-      state.notifications.splice(index, 1);
-    }
   };
 
   const canAccessView = viewId => {
@@ -172,7 +111,6 @@ export function useUIStore() {
 
     return authStore.hasAnyPermission(menuItem.permissions);
   };
-
   const redirectToAuthorizedView = () => {
     if (!canAccessView(state.currentView)) {
       // Find the first accessible view
@@ -183,22 +121,25 @@ export function useUIStore() {
     }
   };
 
+  const closeAllDropdowns = () => {
+    // This function is used by the main layout to close dropdowns
+    // In the actual implementation, this would be handled by individual components
+    console.log('Closing all dropdowns');
+  };
   // Use toRefs to maintain reactivity when destructuring
   return {
     ...toRefs(state),
 
     // Computed
-    menuItems, // Methods
+    menuItems,
+    
+    // Methods
     toggleTheme,
     toggleSidebar,
     getCurrentViewTitle,
     initializeTheme,
-    markNotificationAsRead,
-    markAllNotificationsAsRead,
-    getUnreadNotificationCount,
-    addNotification,
-    removeNotification,
     canAccessView,
     redirectToAuthorizedView,
+    closeAllDropdowns
   };
 }

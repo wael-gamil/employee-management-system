@@ -16,13 +16,18 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Recent Activity -->
+    </div>    <!-- Recent Activity -->
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
       <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
       <div class="space-y-4">
-        <div v-for="activity in recentActivity" :key="activity.id" class="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+        <div v-if="recentActivity.length === 0" class="text-center py-8">
+          <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
+            <component :is="'BellIcon'" class="w-8 h-8 text-gray-400" />
+          </div>
+          <p class="text-gray-500 dark:text-gray-400">No recent activity to display</p>
+          <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Activity will appear here when actions are taken</p>
+        </div>
+        <div v-else v-for="activity in recentActivity" :key="activity.id" class="flex items-center space-x-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
           <div :class="['w-10 h-10 rounded-full flex items-center justify-center', activity.bgColor]">
             <component :is="activity.icon" class="w-5 h-5 text-white" />
           </div>
@@ -38,7 +43,8 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useNotificationStore } from '@/stores/notificationStore'
 import IconComponents from '@/utils/iconComponents'
 
 export default {
@@ -47,6 +53,7 @@ export default {
     ...IconComponents
   },
   setup() {
+    const notificationStore = useNotificationStore()
     const dashboardStats = ref([
       {
         title: 'Total Companies',
@@ -74,44 +81,28 @@ export default {
         value: '156',
         change: 15,
         icon: 'ProjectIcon',
-        bgColor: 'bg-orange-500'
+        bgColor: 'bg-orange-500'      }
+    ])    // Use real notifications for recent activity
+    const recentActivity = computed(() => {
+      // Check if recentNotifications is available and is an array
+      const notifications = Array.isArray(notificationStore.recentNotifications) 
+        ? notificationStore.recentNotifications 
+        : []
+      
+      // If no notifications, return empty array (the UI will handle this gracefully)
+      if (notifications.length === 0) {
+        return []
       }
-    ])
-
-    const recentActivity = ref([
-      {
-        id: 1,
-        title: 'New employee added',
-        description: 'Sarah Johnson joined Engineering department',
-        time: '2 hours ago',
-        icon: 'EmployeeIcon',
-        bgColor: 'bg-green-500'
-      },
-      {
-        id: 2,
-        title: 'Company updated',
-        description: 'TechCorp address information was modified',
-        time: '4 hours ago',
-        icon: 'CompanyIcon',
-        bgColor: 'bg-blue-500'
-      },
-      {
-        id: 3,
-        title: 'Department created',
-        description: 'New Marketing department established',
-        time: '1 day ago',
-        icon: 'DepartmentIcon',
-        bgColor: 'bg-purple-500'
-      },
-      {
-        id: 4,
-        title: 'Bulk import completed',
-        description: '25 employees imported successfully',
-        time: '2 days ago',
-        icon: 'ImportIcon',
-        bgColor: 'bg-orange-500'
-      }
-    ])
+      
+      return notifications.slice(0, 5).map(notification => ({
+        id: notification.id,
+        title: notification.title,
+        description: notification.message,
+        time: notificationStore.formatNotificationTime(notification.timestamp),
+        icon: notification.icon || 'BellIcon',
+        bgColor: notification.bgColor?.replace('bg-', 'bg-') || 'bg-blue-500'
+      }))
+    })
 
     return {
       dashboardStats,

@@ -1,7 +1,13 @@
 import { ref, computed } from 'vue';
 import { dataService } from '@/services/dataService';
+import { useNotificationStore } from '@/stores/notificationStore'
+import { useToastStore } from '@/stores/toastStore'
 
 export function useEmployeeStore() {
+  // Get store instances
+  const notificationStore = useNotificationStore()
+  const toastStore = useToastStore()
+
   // Reactive state
   const employees = ref(dataService.getAll('employees'));
   const employeeSearch = ref('');
@@ -47,9 +53,7 @@ export function useEmployeeStore() {
   // Actions
   const loadEmployees = () => {
     employees.value = dataService.getAll('employees');
-  };
-
-  const addEmployee = employeeData => {
+  };  const addEmployee = async (employeeData) => {
     // Get department and company info
     const department = dataService.getById(
       'departments',
@@ -65,6 +69,10 @@ export function useEmployeeStore() {
     });
 
     employees.value = dataService.getAll('employees');
+      // Add notification and toast
+    notificationStore.addNotification('EMPLOYEE_CREATED', `New employee "${newEmployee.name}" has been added`);
+    toastStore.addToast(`Employee "${newEmployee.name}" added successfully!`, 'success');
+    
     return newEmployee;
   };
 

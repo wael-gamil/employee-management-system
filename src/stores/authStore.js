@@ -1,5 +1,7 @@
 import { ref, computed } from 'vue';
 import { dataService } from '@/services/dataService';
+import { useNotificationStore } from '@/stores/notificationStore';
+import { useToastStore } from '@/stores/toastStore';
 
 const isAuthenticated = ref(false);
 const isLoading = ref(true);
@@ -200,6 +202,9 @@ const loginForm = ref({
 });
 
 export function useAuthStore() {
+  // Get store instances
+  const notificationStore = useNotificationStore();
+  const toastStore = useToastStore();
   const userPermissions = computed(() => {
     if (!currentUser.value?.role) return [];
     return ROLE_PERMISSIONS[currentUser.value.role] || [];
@@ -216,16 +221,16 @@ export function useAuthStore() {
   const hasAllPermissions = permissions => {
     return permissions.every(permission => hasPermission(permission));
   };
-
   const canAccess = (resource, action = 'view') => {
     const permissionKey = `${action}_${resource}`.toUpperCase();
     return hasPermission(PERMISSIONS[permissionKey]);
   };
+
   const login = async (credentials = null) => {
     const creds = credentials || loginForm.value;
 
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         // Get users from data service
         const users = dataService.getAll('users');
         const user = users.find(u => u.email === creds.email);
@@ -250,27 +255,43 @@ export function useAuthStore() {
           localStorage.setItem('userSession', JSON.stringify(sessionData));
 
           // Store auth token
-          localStorage.setItem('authToken', 'demo-token-' + user.id);
-
-          // Set current user in data service
+          localStorage.setItem('authToken', 'demo-token-' + user.id);          // Set current user in data service
           dataService.setCurrentUser(updatedUser);
 
+          // Add login notification and toast
+          notificationStore.addNotification('USER_LOGIN', `${updatedUser.name} logged in successfully`);
+          
+          toastStore.addToast({
+            type: 'success',
+            title: 'Welcome Back!',
+            message: `Successfully logged in as ${updatedUser.name}`
+          });
           resolve(updatedUser);
         } else {
           reject(new Error('Invalid credentials'));
         }
       }, 1000);
     });
-  };
-  const logout = () => {
+  };  const logout = async () => {
+    const userName = currentUser.value?.name;
+    
     currentUser.value = null;
-    isAuthenticated.value = false;
-
-    // Clear session data
+    isAuthenticated.value = false;    // Clear session data
     localStorage.removeItem('userSession');
     localStorage.removeItem('authToken');
     localStorage.removeItem('rememberedUser');
     dataService.clearSession();
+
+    // Add logout notification and toast
+    if (userName) {
+      notificationStore.addNotification('USER_LOGOUT', `${userName} logged out`);
+      
+      toastStore.addToast({
+        type: 'info',
+        title: 'Logged Out',
+        message: `${userName} has been logged out successfully`
+      });
+    }
 
     // Force a brief loading state to show logout is happening
     isLoading.value = true;
@@ -407,3 +428,4 @@ export function useAuthStore() {
     isHigherRole,
   };
 }
+
