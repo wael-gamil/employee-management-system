@@ -123,6 +123,68 @@ const ImportIcon = () => h('svg', {
   })
 ])
 
+const TrendingUpIcon = () => h('svg', {
+  class: 'w-5 h-5',
+  fill: 'none',
+  stroke: 'currentColor',
+  viewBox: '0 0 24 24'
+}, [
+  h('path', {
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    'stroke-width': '2',
+    d: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'
+  })
+])
+
+const PieChartIcon = () => h('svg', {
+  class: 'w-5 h-5',
+  fill: 'none',
+  stroke: 'currentColor',
+  viewBox: '0 0 24 24'
+}, [
+  h('path', {
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    'stroke-width': '2',
+    d: 'M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z'
+  }),
+  h('path', {
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    'stroke-width': '2',
+    d: 'M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z'
+  })
+])
+
+const ExclamationTriangleIcon = () => h('svg', {
+  class: 'w-5 h-5',
+  fill: 'none',
+  stroke: 'currentColor',
+  viewBox: '0 0 24 24'
+}, [
+  h('path', {
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    'stroke-width': '2',
+    d: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z'
+  })
+])
+
+const UsersIcon = () => h('svg', {
+  class: 'w-5 h-5',
+  fill: 'none',
+  stroke: 'currentColor',
+  viewBox: '0 0 24 24'
+}, [
+  h('path', {
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+    'stroke-width': '2',
+    d: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a4 4 0 11-8 0 4 4 0 018 0z'
+  })
+])
+
 export default {
   DashboardIcon,
   CompanyIcon,
@@ -131,5 +193,9 @@ export default {
   ProjectIcon,
   ReportIcon,
   SettingsIcon,
-  ImportIcon
+  ImportIcon,
+  UsersIcon,
+  TrendingUpIcon,
+  PieChartIcon,
+  ExclamationTriangleIcon
 }
