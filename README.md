@@ -16,7 +16,7 @@ This is a full-featured Employee Management System built with Vue 3, Vite, and T
 
 #### 1. Authentication & User Management - **95% Complete**
 - ✅ Login/Logout with secure token storage and auto-refresh
-- ✅ Role-Based Menus (6 roles with 16+ granular permissions)
+- ✅ Role-Based Menus (4 roles with 16+ granular permissions)
 - ✅ User Profiles (edit account details, profile picture, password)
 - ✅ Activity feed (recent logins, profile changes)
 - ❌ **Missing**: Forgot password flow
