@@ -85,9 +85,10 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useNotificationStore } from '@/stores/notificationStore';
 import IconComponents from '@/utils/iconComponents';
+import dataService from '@/services/dataService';
 
 export default {
   name: 'DashboardView',
@@ -96,36 +97,47 @@ export default {
   },
   setup() {
     const notificationStore = useNotificationStore();
-    const dashboardStats = ref([
-      {
-        title: 'Total Companies',
-        value: '24',
-        change: 12,
-        icon: 'CompanyIcon',
-        bgColor: 'bg-blue-500',
-      },
-      {
-        title: 'Total Employees',
-        value: '1,234',
-        change: 8,
-        icon: 'EmployeeIcon',
-        bgColor: 'bg-green-500',
-      },
-      {
-        title: 'Departments',
-        value: '48',
-        change: -2,
-        icon: 'DepartmentIcon',
-        bgColor: 'bg-purple-500',
-      },
-      {
-        title: 'Active Projects',
-        value: '156',
-        change: 15,
-        icon: 'ProjectIcon',
-        bgColor: 'bg-orange-500',
-      },
-    ]); // Use real notifications for recent activity
+    const dashboardStats = ref([]);
+
+    // Load real data from dataService
+    const loadDashboardStats = () => {
+      const stats = dataService.getDashboardStatsWithChanges();
+      
+      dashboardStats.value = [
+        {
+          title: 'Total Companies',
+          value: stats.companies.value.toString(),
+          change: stats.companies.change,
+          icon: 'CompanyIcon',
+          bgColor: 'bg-blue-500',
+        },
+        {
+          title: 'Total Employees',
+          value: stats.employees.value.toLocaleString(),
+          change: stats.employees.change,
+          icon: 'EmployeeIcon',
+          bgColor: 'bg-green-500',
+        },
+        {
+          title: 'Departments',
+          value: stats.departments.value.toString(),
+          change: stats.departments.change,
+          icon: 'DepartmentIcon',
+          bgColor: 'bg-purple-500',
+        },
+        {
+          title: 'Active Projects',
+          value: stats.projects.value.toString(),
+          change: stats.projects.change,
+          icon: 'ProjectIcon',
+          bgColor: 'bg-orange-500',
+        },
+      ];
+    };
+
+    onMounted(() => {
+      loadDashboardStats();
+    });// Use real notifications for recent activity
     const recentActivity = computed(() => {
       // Use the same approach as AppHeader - access recentNotifications directly
       const notifications = notificationStore.recentNotifications.value || [];
@@ -157,11 +169,10 @@ export default {
         recentActivities
       );
       return recentActivities;
-    });
-
-    return {
+    });    return {
       dashboardStats,
       recentActivity,
+      loadDashboardStats,
     };
   },
 };

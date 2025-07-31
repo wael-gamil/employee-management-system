@@ -559,22 +559,57 @@ class DataService {
     this.initializeDefaultData();
   }
 
-  // Export data (for backup)
-  exportAllData() {
-    const data = {};
-    Object.entries(this.storageKeys).forEach(([key, storageKey]) => {
-      data[key] = this.getAll(key);
-    });
-    return data;
+  // Dashboard Statistics Methods
+  getDashboardStats() {
+    const companies = this.getAll('companies');
+    const employees = this.getAll('employees');
+    const departments = this.getAll('departments');
+    const projects = this.getAll('projects');
+
+    // Calculate active projects (assuming projects with status 'active' or 'in-progress')
+    const activeProjects = projects.filter(project => 
+      project.status === 'active' || project.status === 'in-progress' || project.status === 'Active'
+    );
+
+    return {
+      totalCompanies: companies.length,
+      totalEmployees: employees.length,
+      totalDepartments: departments.length,
+      activeProjects: activeProjects.length,
+    };
   }
 
-  // Import data (from backup)
-  importAllData(data) {
-    Object.entries(data).forEach(([entityType, items]) => {
-      if (this.storageKeys[entityType]) {
-        this.saveAll(entityType, items);
-      }
-    });
+  // Get statistics with percentage changes (comparing to a month ago)
+  getDashboardStatsWithChanges() {
+    const stats = this.getDashboardStats();
+    
+    // For demo purposes, we'll calculate mock percentage changes
+    // In a real app, you'd store historical data and compare
+    const mockChanges = {
+      companies: Math.floor(Math.random() * 20) - 5, // -5 to +15%
+      employees: Math.floor(Math.random() * 15) + 2, // +2 to +17%
+      departments: Math.floor(Math.random() * 10) - 3, // -3 to +7%
+      projects: Math.floor(Math.random() * 25) + 5, // +5 to +30%
+    };
+
+    return {
+      companies: {
+        value: stats.totalCompanies,
+        change: mockChanges.companies,
+      },
+      employees: {
+        value: stats.totalEmployees,
+        change: mockChanges.employees,
+      },
+      departments: {
+        value: stats.totalDepartments,
+        change: mockChanges.departments,
+      },
+      projects: {
+        value: stats.activeProjects,
+        change: mockChanges.projects,
+      },
+    };
   }
 }
 
