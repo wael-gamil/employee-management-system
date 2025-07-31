@@ -8,7 +8,7 @@ This is a full-featured Employee Management System built with Vue 3, Vite, and T
 
 ### 🚀 Live Demo
 - **Development Server**: `npm run dev` → http://localhost:5173
-- **Demo Users**: 6 different roles available (Super Admin, Admin, HR Manager, Project Manager, Employee, Viewer)
+- **Demo Users**: 4 different roles available (Admin, HR Manager, Department Head, Employee)
 
 ## 📋 Task Requirements Completion Status
 
