@@ -1924,11 +1924,18 @@
 }
 </style>
 
-<script setup>
+<script>
 import { ref, computed, onMounted } from 'vue';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useToastStore } from '@/stores/toastStore';
-import * as icons from '@/utils/iconComponents';
+import IconComponents from '@/utils/iconComponents';
+
+export default {
+  name: 'SettingsView',
+  components: {
+    ...IconComponents,
+  },
+  setup() {
 
 const settingsStore = useSettingsStore();
 const toastStore = useToastStore();
@@ -2231,5 +2238,50 @@ const getSeverityColor = severity => {
     default:
       return 'bg-gray-500';
   }
+};
+
+// Return all reactive refs and methods for the template
+return {
+  // Reactive refs
+  activeTab,
+  hasUnsavedChanges,
+  isLoading,
+  showUserModal,
+  editingUser,
+  userForm,
+  testEmailForm,
+  
+  // Computed properties
+  settings,
+  users,
+  auditLogs,
+  systemInfo,
+  
+  // Static data
+  settingsCategories,
+  timezones,
+  roles,
+  themes,
+  languages,
+  
+  // Methods
+  saveSettings,
+  handleSettingChange,
+  resetSettings,
+  resetAllSettings,
+  exportSettings,
+  handleFileImport,
+  createBackup,
+  toggleUserStatus,
+  openUserModal,
+  closeUserModal,
+  saveUser,
+  sendTestEmail,
+  testSlackIntegration,
+  formatDate,
+  formatBackupDate,
+  getSeverityColor,
+};
+},
 };
 </script>
